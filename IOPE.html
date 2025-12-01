@@ -1,0 +1,1858 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatórios IOPE - GCM</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    
+    <style>
+        :root {
+            --primary-color: #1e3a8a;
+            --secondary-color: #f59e0b;
+            --light-color: #f8fafc;
+            --dark-color: #1e293b;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f1f5f9;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo img {
+            height: 50px;
+        }
+        
+        .logo h1 {
+            font-size: 1.5rem;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        nav a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Main Content */
+        main {
+            min-height: calc(100vh - 140px);
+            padding: 2rem 0;
+        }
+        
+        .page {
+            display: none;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        h2 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--secondary-color);
+        }
+        
+        /* Forms */
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .form-hint {
+            font-size: 0.875rem;
+            color: #64748b;
+            margin-top: 0.25rem;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #1e40af;
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary-color);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #d97706;
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+        }
+        
+        .btn-danger:hover {
+            background-color: #dc2626;
+        }
+        
+        .form-footer {
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+        
+        .form-footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Admin Dashboard */
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .stat-card h3 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-card p {
+            color: #64748b;
+        }
+        
+        .reports-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+        }
+        
+        .reports-table th,
+        .reports-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .reports-table th {
+            background-color: #f8fafc;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .reports-table tr:hover {
+            background-color: #f8fafc;
+        }
+        
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--primary-color);
+            margin-right: 10px;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 2rem;
+            position: relative;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #64748b;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 1.5rem 0;
+            text-align: center;
+        }
+        
+        /* Alertas */
+        .alert {
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+        
+        .alert-success {
+            background-color: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+        
+        .alert-error {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+        
+        .alert-info {
+            background-color: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #93c5fd;
+        }
+        
+        /* Loading */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Report Details */
+        .report-detail {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .report-detail:last-child {
+            border-bottom: none;
+        }
+        
+        .report-detail h4 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .report-detail p {
+            background-color: #f8fafc;
+            padding: 1rem;
+            border-radius: 4px;
+            white-space: pre-wrap;
+        }
+        
+        /* Admin Access */
+        .admin-access {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1rem;
+        }
+        
+        .admin-access-btn {
+            background: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+        
+        .admin-access-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        /* Login Modal */
+        .login-modal {
+            display: flex;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .login-modal-content {
+            background-color: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            padding: 2.5rem;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .login-modal h2 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .login-modal p {
+            margin-bottom: 2rem;
+            color: #64748b;
+        }
+        
+        .discord-login-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background-color: #5865F2;
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+        
+        .discord-login-btn:hover {
+            background-color: #4752c4;
+        }
+        
+        .discord-icon {
+            width: 24px;
+            height: 24px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background-color: #f8fafc;
+            border-radius: 8px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+        
+        .user-details {
+            text-align: left;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        .user-discriminator {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+        
+        /* Access Denied */
+        .access-denied {
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .access-denied h2 {
+            color: var(--danger-color);
+        }
+        
+        .access-denied p {
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Role Info */
+        .role-info {
+            background-color: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        
+        .role-info h3 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .required-role {
+            display: inline-block;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-weight: 600;
+            margin: 0.5rem 0;
+        }
+        
+        /* History Page */
+        .history-filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .webhook-status {
+            background-color: #f8fafc;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .webhook-status h4 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+        
+        .status-active {
+            background-color: var(--success-color);
+        }
+        
+        .status-inactive {
+            background-color: var(--danger-color);
+        }
+        
+        /* Logs Table */
+        .logs-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+        }
+        
+        .logs-table th,
+        .logs-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 0.875rem;
+        }
+        
+        .logs-table th {
+            background-color: #f8fafc;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .log-success {
+            color: var(--success-color);
+            font-weight: 600;
+        }
+        
+        .log-error {
+            color: var(--danger-color);
+            font-weight: 600;
+        }
+        
+        .log-pending {
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .dashboard-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-container {
+                max-width: 100%;
+            }
+            
+            .login-modal-content {
+                padding: 1.5rem;
+            }
+            
+            .history-filters {
+                flex-direction: column;
+            }
+            
+            .filter-group {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Modal de Login com Discord -->
+    <div class="login-modal" id="login-modal">
+        <div class="login-modal-content">
+            <h2>Bem-vindo ao Sistema IOPE GCM</h2>
+            <p>Para acessar o sistema, faça login com sua conta do Discord</p>
+            
+            <div class="role-info">
+                <h3>Acesso Restrito</h3>
+                <p>Somente membros com o cargo:</p>
+                <div class="required-role">[ ✬ IOPE ✬ ]</div>
+                <p>podem acessar este sistema.</p>
+            </div>
+            
+            <button class="discord-login-btn" id="discord-login-btn">
+                <svg class="discord-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19.73 4.87a18.2 18.2 0 0 0-4.6-1.44c-.21.4-.4.8-.58 1.21a16.8 16.8 0 0 0-4.33 0c-.18-.41-.37-.82-.59-1.21a18.4 18.4 0 0 0-4.61 1.44c-3.18 4.83-4 9.64-3.57 14.35a18.8 18.8 0 0 0 5.72 2.87c.46-.63.86-1.3 1.2-2 .65.25 1.33.45 2.03.6.5-.68.93-1.4 1.3-2.16-.76-.28-1.48-.63-2.16-1.05.18-.14.36-.28.53-.44a13 13 0 0 0 10.4 0c.17.16.35.3.53.44-.68.42-1.4.77-2.16 1.05.37.75.8 1.48 1.3 2.16.7-.15 1.38-.35 2.03-.6.34.7.74 1.37 1.2 2a18.8 18.8 0 0 0 5.72-2.87c.57-5.4-.97-10.2-3.57-14.35zM8.7 15.12c-1.1 0-2-1.02-2-2.27 0-1.25.88-2.27 2-2.27 1.12 0 2.02 1.02 2 2.27 0 1.25-.88 2.27-2 2.27zm6.6 0c-1.1 0-2-1.02-2-2.27 0-1.25.88-2.27 2-2.27 1.12 0 2.02 1.02 2 2.27 0 1.25-.88 2.27-2 2.27z"/>
+                </svg>
+                Entrar com Discord
+            </button>
+            
+            <div id="user-info-container" style="display: none;">
+                <div class="user-info">
+                    <img id="user-avatar" src="" alt="Avatar" class="user-avatar">
+                    <div class="user-details">
+                        <div class="user-name" id="user-name"></div>
+                        <div class="user-discriminator" id="user-discriminator"></div>
+                    </div>
+                </div>
+                <button class="btn" id="continue-btn">Continuar para o Site</button>
+            </div>
+            
+            <div id="login-status" style="margin-top: 1rem;"></div>
+        </div>
+    </div>
+
+    <!-- Página de Acesso Negado -->
+    <div id="access-denied" class="page" style="display: none;">
+        <div class="access-denied">
+            <h2>Acesso Negado</h2>
+            <p>Você não possui permissão para acessar este sistema.</p>
+            <div class="role-info">
+                <h3>Cargo Requerido</h3>
+                <p>Para acessar o sistema, você precisa ter o cargo:</p>
+                <div class="required-role">[ ✬ IOPE ✬ ]</div>
+                <p>no servidor da GCM.</p>
+            </div>
+            <button class="btn" id="retry-login">Tentar Novamente</button>
+        </div>
+    </div>
+    
+    <header id="main-header" style="display: none;">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <!-- Logo fictício da GCM -->
+                    <div style="width: 50px; height: 50px; background-color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--primary-color); font-weight: bold;">GCM</div>
+                    <h1>IOPE GCM - Relatórios</h1>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#" class="nav-link" data-page="home">Início</a></li>
+                        <li><a href="#" class="nav-link" data-page="report">Novo Relatório</a></li>
+                        <li><a href="#" class="nav-link" data-page="history">Histórico</a></li>
+                        <li><a href="#" class="nav-link" data-page="logs">Logs Webhook</a></li>
+                        <li><a href="#" class="nav-link" data-page="admin" id="admin-link" style="display:none;">Administração</a></li>
+                        <li><a href="#" id="logout-link">Sair</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+    
+    <main id="main-content" style="display: none;">
+        <div class="container">
+            <!-- Página Inicial -->
+            <section id="home" class="page active">
+                <h2>Bem-vindo ao Sistema de Relatórios do IOPE</h2>
+                <p>Este é o sistema oficial para registro de relatórios de patrulhamento do IOPE da Guarda Civil Metropolitana.</p>
+                
+                <div style="margin: 2rem 0;">
+                    <h3>Como utilizar o sistema</h3>
+                    <ol style="margin-left: 1.5rem; margin-top: 1rem;">
+                        <li>Clique em "Novo Relatório" para registrar o término de um patrulhamento</li>
+                        <li>Preencha todos os campos obrigatórios do formulário</li>
+                        <li>Revise as informações e envie o relatório</li>
+                        <li>O relatório será armazenado no sistema para consulta posterior</li>
+                        <li>Verifique o histórico e logs no menu superior</li>
+                    </ol>
+                </div>
+                
+                <div style="display: flex; gap: 1rem; margin-top: 2rem; justify-content: center;">
+                    <button class="btn" id="go-to-report">Novo Relatório</button>
+                    <button class="btn btn-secondary" id="go-to-history">Ver Histórico</button>
+                </div>
+
+                <div class="admin-access">
+                    <button class="admin-access-btn" id="admin-access-btn">Acesso Administrativo</button>
+                </div>
+            </section>
+            
+            <!-- Página de Login (oculta) -->
+            <section id="login" class="page">
+                <h2>Acesso Administrativo</h2>
+                <div id="login-alert"></div>
+                <div class="form-container">
+                    <form id="login-form">
+                        <div class="form-group">
+                            <label for="login-username">Nome de Usuário</label>
+                            <input type="text" id="login-username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="login-password">Senha</label>
+                            <input type="password" id="login-password" required>
+                        </div>
+                        <button type="submit" class="btn">Entrar</button>
+                    </form>
+                    <div class="form-footer">
+                        <p><a href="#" class="nav-link" data-page="home">Voltar para o início</a></p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Página de Relatório -->
+            <section id="report" class="page">
+                <h2>Relatório de Patrulhamento - IOPE</h2>
+                <div id="report-alert"></div>
+                <div class="form-container">
+                    <form id="report-form">
+                        <h3 style="color: var(--primary-color); margin-bottom: 1.5rem;">Dados do Patrulhamento</h3>
+                        
+                        <div class="form-group">
+                            <label for="report-agent">Nome do Agente *</label>
+                            <input type="text" id="report-agent" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="report-date">Data do Patrulhamento *</label>
+                            <input type="date" id="report-date" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="report-shift">Turno *</label>
+                            <select id="report-shift" required>
+                                <option value="">Selecione o turno</option>
+                                <option value="matutino">Matutino</option>
+                                <option value="vespertino">Vespertino</option>
+                                <option value="noturno">Noturno</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="report-vehicle">Viatura Utilizada *</label>
+                            <input type="text" id="report-vehicle" placeholder="Ex: VTR 01, VTR 02" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="report-area">Área de Patrulhamento *</label>
+                            <input type="text" id="report-area" placeholder="Ex: Centro, Zona Norte, Zona Sul" required>
+                        </div>
+                        
+                        <h3 style="color: var(--primary-color); margin: 2rem 0 1.5rem 0;">Atividades Realizadas</h3>
+                        
+                        <div class="form-group">
+                            <label for="report-activities">Descrição das Atividades *</label>
+                            <textarea id="report-activities" placeholder="Descreva as atividades realizadas durante o patrulhamento..." required></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="report-incidents">Ocorrências Registradas</label>
+                            <textarea id="report-incidents" placeholder="Descreva quaisquer ocorrências ou incidentes registrados durante o patrulhamento..."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="report-arrests">Prisões Realizadas</label>
+                            <textarea id="report-arrests" placeholder="Descreva as prisões realizadas, se houver..."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="report-observations">Observações</label>
+                            <textarea id="report-observations" placeholder="Adicione quaisquer observações relevantes sobre o patrulhamento..."></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn" id="report-btn">
+                            <span id="report-btn-text">Enviar Relatório</span>
+                            <div class="loading" id="report-loading" style="display: none;"></div>
+                        </button>
+                    </form>
+                    <div class="form-footer">
+                        <p><a href="#" class="nav-link" data-page="home">Voltar para o início</a></p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Página de Histórico -->
+            <section id="history" class="page">
+                <h2>Histórico de Relatórios</h2>
+                
+                <div class="history-filters">
+                    <div class="filter-group">
+                        <label for="filter-agent">Filtrar por Agente</label>
+                        <select id="filter-agent">
+                            <option value="">Todos os agentes</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="filter-shift">Filtrar por Turno</label>
+                        <select id="filter-shift">
+                            <option value="">Todos os turnos</option>
+                            <option value="matutino">Matutino</option>
+                            <option value="vespertino">Vespertino</option>
+                            <option value="noturno">Noturno</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="filter-date">Filtrar por Data</label>
+                        <input type="date" id="filter-date">
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="filter-vehicle">Filtrar por Viatura</label>
+                        <input type="text" id="filter-vehicle" placeholder="Ex: VTR 01">
+                    </div>
+                </div>
+                
+                <table class="reports-table">
+                    <thead>
+                        <tr>
+                            <th>Agente</th>
+                            <th>Data</th>
+                            <th>Turno</th>
+                            <th>Viatura</th>
+                            <th>Área</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-table-body">
+                        <!-- Os relatórios do histórico serão inseridos aqui via JavaScript -->
+                    </tbody>
+                </table>
+                
+                <div id="history-empty" style="display: none; text-align: center; padding: 2rem;">
+                    <p>Nenhum relatório encontrado com os filtros aplicados.</p>
+                </div>
+            </section>
+            
+            <!-- Página de Logs Webhook -->
+            <section id="logs" class="page">
+                <h2>Logs de Webhook</h2>
+                
+                <div class="webhook-status">
+                    <h4>Status do Webhook</h4>
+                    <p>
+                        <span class="status-indicator status-active" id="webhook-status-indicator"></span>
+                        <span id="webhook-status-text">Verificando status...</span>
+                    </p>
+                    <p><strong>URL:</strong> <span id="webhook-url">https://discord.com/api/webhooks/1444837023549751518/v_NXVZHcu6_oh6fjNwLtUnBf3FMmZcxBtV-dqann2lOIda8Yz6wxYuWjX8RZ4b2iEL7a</span></p>
+                </div>
+                
+                <h3>Últimos Envios</h3>
+                <table class="logs-table">
+                    <thead>
+                        <tr>
+                            <th>Data/Hora</th>
+                            <th>Relatório</th>
+                            <th>Status</th>
+                            <th>Mensagem</th>
+                            <th>Resposta</th>
+                        </tr>
+                    </thead>
+                    <tbody id="logs-table-body">
+                        <!-- Os logs serão inseridos aqui via JavaScript -->
+                    </tbody>
+                </table>
+                
+                <div style="margin-top: 1.5rem;">
+                    <button class="btn btn-secondary" id="refresh-logs">Atualizar Logs</button>
+                    <button class="btn" id="test-webhook">Testar Webhook</button>
+                </div>
+            </section>
+            
+            <!-- Página de Administração -->
+            <section id="admin" class="page">
+                <h2>Painel Administrativo - Relatórios IOPE</h2>
+                
+                <div style="margin-bottom: 1.5rem; padding: 1rem; background-color: #f0f9ff; border-radius: 6px;">
+                    <p><strong>Usuário logado:</strong> <span id="logged-admin">Administrador</span></p>
+                </div>
+                
+                <div class="dashboard-stats">
+                    <div class="stat-card">
+                        <h3 id="total-reports">0</h3>
+                        <p>Total de Relatórios</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="today-reports">0</h3>
+                        <p>Relatórios Hoje</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="matutino-reports">0</h3>
+                        <p>Turno Matutino</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="noturno-reports">0</h3>
+                        <p>Turno Noturno</p>
+                    </div>
+                </div>
+                
+                <h3>Relatórios Registrados</h3>
+                <table class="reports-table">
+                    <thead>
+                        <tr>
+                            <th>Agente</th>
+                            <th>Data</th>
+                            <th>Turno</th>
+                            <th>Viatura</th>
+                            <th>Área</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reports-table-body">
+                        <!-- Os relatórios serão inseridos aqui via JavaScript -->
+                    </tbody>
+                </table>
+            </section>
+        </div>
+    </main>
+    
+    <!-- Modal para visualizar detalhes do relatório -->
+    <div class="modal" id="report-modal">
+        <div class="modal-content">
+            <button class="close-modal">&times;</button>
+            <h2>Detalhes do Relatório</h2>
+            <div id="report-details">
+                <!-- Os detalhes do relatório serão inseridos aqui via JavaScript -->
+            </div>
+        </div>
+    </div>
+    
+    <footer id="main-footer" style="display: none;">
+        <div class="container">
+            <p>&copy; 2025 IOPE - Guarda Civil Metropolitana - Todos os direitos reservados</p>
+        </div>
+    </footer>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+        import { 
+            getFirestore, 
+            collection, 
+            addDoc, 
+            getDocs, 
+            updateDoc, 
+            doc, 
+            query, 
+            where, 
+            orderBy,
+            onSnapshot 
+        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBkkzzkQF1jnqO0v0xxQKl99VY4WBi9i3E",
+            authDomain: "gcmdados.firebaseapp.com",
+            projectId: "gcmdados",
+            storageBucket: "gcmdados.firebasestorage.app",
+            messagingSenderId: "453795833548",
+            appId: "1:453795833548:web:bc1628d4cc6ab249acc469",
+            measurementId: "G-7K47KTSDGD"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getFirestore(app);
+
+        // Tornar as variáveis globais
+        window.firebaseApp = app;
+        window.firebaseDB = db;
+        window.firebaseFunctions = {
+            collection, addDoc, getDocs, updateDoc, doc, query, where, orderBy, onSnapshot
+        };
+
+        // Configuração do Discord OAuth
+        const DISCORD_CLIENT_ID = '1203489214621159434';
+        const DISCORD_REDIRECT_URI = encodeURIComponent('http://127.0.0.1:5500/IOPE.html');
+        const DISCORD_SCOPE = 'identify+guilds.members.read';
+        const DISCORD_AUTH_URL = `https://discord.com/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&response_type=code&redirect_uri=${DISCORD_REDIRECT_URI}&scope=${DISCORD_SCOPE}`;
+
+        // Webhook do Discord
+        const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1444839357361029141/T-aj-caXo2ddDAcEMFM2K5vBJ65rEQP3-bxlEjVwjDP5UfknXBybL2K67XFJxY7J2f7U';
+
+        // ID do servidor GCM (precisa ser configurado)
+        const GCM_GUILD_ID = '1432341597801938967'; // Substitua pelo ID real do servidor GCM
+        
+        // Nome exato do cargo IOPE
+        const IOPE_ROLE_NAME = '[ ✬ IOPE ✬ ]';
+
+        // Configuração inicial da aplicação
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar se já está autenticado
+            checkAuthentication();
+            
+            // Botão de login Discord
+            document.getElementById('discord-login-btn').addEventListener('click', function() {
+                window.location.href = DISCORD_AUTH_URL;
+            });
+            
+            // Botão para tentar login novamente
+            document.getElementById('retry-login').addEventListener('click', function() {
+                window.location.href = DISCORD_AUTH_URL;
+            });
+            
+            // Processar código de autorização se presente na URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const authCode = urlParams.get('code');
+            
+            if (authCode) {
+                processDiscordAuth(authCode);
+                // Limpar a URL para remover o código
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+            
+            // Resto da configuração da aplicação...
+            setupApplication();
+        });
+
+        // Função para verificar autenticação
+        function checkAuthentication() {
+            const userData = localStorage.getItem('discordUser');
+            const hasIopeRole = localStorage.getItem('hasIopeRole');
+            
+            if (userData && hasIopeRole === 'true') {
+                showMainApplication();
+            } else {
+                showLoginModal();
+            }
+        }
+
+        // Função para processar autenticação do Discord
+        async function processDiscordAuth(code) {
+            try {
+                document.getElementById('login-status').innerHTML = '<div class="alert alert-info">Verificando permissões...</div>';
+                
+                // Simular verificação do cargo IOPE
+                const hasIopeRole = await verifyIopeRole(code);
+                
+                if (hasIopeRole) {
+                    localStorage.setItem('hasIopeRole', 'true');
+                    document.getElementById('login-status').innerHTML = '<div class="alert alert-success">Acesso permitido! Carregando sistema...</div>';
+                    setTimeout(() => {
+                        showMainApplication();
+                    }, 1500);
+                } else {
+                    document.getElementById('login-status').innerHTML = '<div class="alert alert-error">Acesso negado. Cargo IOPE não encontrado.</div>';
+                    setTimeout(() => {
+                        showAccessDenied();
+                    }, 2000);
+                }
+                
+            } catch (error) {
+                console.error('Erro na autenticação:', error);
+                document.getElementById('login-status').innerHTML = '<div class="alert alert-error">Erro na autenticação. Tente novamente.</div>';
+                setTimeout(() => {
+                    showAccessDenied();
+                }, 2000);
+            }
+        }
+
+        // Função para verificar se o usuário tem o cargo IOPE
+        async function verifyIopeRole(authCode) {
+            // EM PRODUÇÃO: Esta verificação deve ser feita no backend por questões de segurança
+            
+            try {
+                // Simulação de backend - em produção, faça uma requisição para seu servidor
+                // que troca o código por um token e verifica as roles do usuário
+                
+                // Para demonstração, vamos simular uma verificação
+                // Em produção, implemente a lógica real usando a API do Discord
+                
+                // Simulação: 80% de chance de ter o cargo (para teste)
+                const randomCheck = Math.random() > 0.2;
+                
+                if (randomCheck) {
+                    console.log('✅ Usuário tem o cargo IOPE');
+                    return true;
+                } else {
+                    console.log('❌ Usuário NÃO tem o cargo IOPE');
+                    return false;
+                }
+                
+            } catch (error) {
+                console.error('Erro ao verificar cargo:', error);
+                return false;
+            }
+        }
+
+        // Função para mostrar a aplicação principal
+        function showMainApplication() {
+            document.getElementById('login-modal').style.display = 'none';
+            document.getElementById('main-header').style.display = 'block';
+            document.getElementById('main-content').style.display = 'block';
+            document.getElementById('main-footer').style.display = 'block';
+            document.getElementById('access-denied').style.display = 'none';
+            
+            // Definir data atual como padrão
+            const today = new Date().toISOString().split('T')[0];
+            if (document.getElementById('report-date')) {
+                document.getElementById('report-date').value = today;
+            }
+            
+            // Carregar dados iniciais
+            loadHistory();
+            loadWebhookLogs();
+            checkWebhookStatus();
+        }
+
+        // Função para mostrar modal de login
+        function showLoginModal() {
+            document.getElementById('login-modal').style.display = 'flex';
+            document.getElementById('main-header').style.display = 'none';
+            document.getElementById('main-content').style.display = 'none';
+            document.getElementById('main-footer').style.display = 'none';
+            document.getElementById('access-denied').style.display = 'none';
+        }
+
+        // Função para mostrar acesso negado
+        function showAccessDenied() {
+            document.getElementById('login-modal').style.display = 'none';
+            document.getElementById('main-header').style.display = 'none';
+            document.getElementById('main-content').style.display = 'none';
+            document.getElementById('main-footer').style.display = 'none';
+            document.getElementById('access-denied').style.display = 'block';
+        }
+
+        // Configuração do restante da aplicação
+        function setupApplication() {
+            // Navegação entre páginas
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetPage = this.getAttribute('data-page');
+                    showPage(targetPage);
+                    
+                    // Carregar dados específicos da página
+                    if (targetPage === 'history') {
+                        loadHistory();
+                    } else if (targetPage === 'logs') {
+                        loadWebhookLogs();
+                        checkWebhookStatus();
+                    } else if (targetPage === 'admin') {
+                        loadReports();
+                    }
+                });
+            });
+            
+            // Botões de ação
+            if (document.getElementById('go-to-report')) {
+                document.getElementById('go-to-report').addEventListener('click', function() {
+                    showPage('report');
+                });
+            }
+            
+            if (document.getElementById('go-to-history')) {
+                document.getElementById('go-to-history').addEventListener('click', function() {
+                    showPage('history');
+                });
+            }
+            
+            // Envio do formulário de relatório
+            if (document.getElementById('report-form')) {
+                document.getElementById('report-form').addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    submitReport();
+                });
+            }
+            
+            // Envio do formulário de login
+            if (document.getElementById('login-form')) {
+                document.getElementById('login-form').addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    adminLogin();
+                });
+            }
+            
+            // Filtros do histórico
+            setupHistoryFilters();
+            
+            // Botões dos logs
+            if (document.getElementById('refresh-logs')) {
+                document.getElementById('refresh-logs').addEventListener('click', function() {
+                    loadWebhookLogs();
+                });
+            }
+            
+            if (document.getElementById('test-webhook')) {
+                document.getElementById('test-webhook').addEventListener('click', function() {
+                    testWebhook();
+                });
+            }
+            
+            // Fechar modal
+            if (document.querySelector('.close-modal')) {
+                document.querySelector('.close-modal').addEventListener('click', function() {
+                    document.getElementById('report-modal').style.display = 'none';
+                });
+            }
+            
+            // Carregar relatórios na página de admin (se logado)
+            if (localStorage.getItem('adminLoggedIn') === 'true') {
+                document.getElementById('admin-link').style.display = 'block';
+                loadReports();
+            }
+            
+            // Logout
+            if (document.getElementById('logout-link')) {
+                document.getElementById('logout-link').addEventListener('click', function(e) {
+                    e.preventDefault();
+                    localStorage.removeItem('adminLoggedIn');
+                    localStorage.removeItem('discordUser');
+                    localStorage.removeItem('hasIopeRole');
+                    document.getElementById('admin-link').style.display = 'none';
+                    showLoginModal();
+                });
+            }
+        }
+        
+        // Configurar filtros do histórico
+        function setupHistoryFilters() {
+            const filters = ['filter-agent', 'filter-shift', 'filter-date', 'filter-vehicle'];
+            
+            filters.forEach(filterId => {
+                const filterElement = document.getElementById(filterId);
+                if (filterElement) {
+                    filterElement.addEventListener('change', function() {
+                        loadHistory();
+                    });
+                }
+            });
+        }
+        
+        // Função para mostrar página específica
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+        }
+        
+        // Função para mostrar alertas
+        function showAlert(containerId, message, type) {
+            const alertContainer = document.getElementById(containerId);
+            alertContainer.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+            
+            // Remover alerta após 5 segundos
+            setTimeout(() => {
+                if (alertContainer) {
+                    alertContainer.innerHTML = '';
+                }
+            }, 5000);
+        }
+        
+        // Função para enviar relatório
+        async function submitReport() {
+            const reportBtn = document.getElementById('report-btn');
+            const reportBtnText = document.getElementById('report-btn-text');
+            const reportLoading = document.getElementById('report-loading');
+            
+            // Mostrar loading
+            reportBtn.disabled = true;
+            reportBtnText.textContent = 'Enviando...';
+            reportLoading.style.display = 'inline-block';
+            
+            try {
+                // Coletar dados do formulário
+                const reportData = {
+                    agent: document.getElementById('report-agent').value,
+                    date: document.getElementById('report-date').value,
+                    shift: document.getElementById('report-shift').value,
+                    vehicle: document.getElementById('report-vehicle').value,
+                    area: document.getElementById('report-area').value,
+                    activities: document.getElementById('report-activities').value,
+                    incidents: document.getElementById('report-incidents').value,
+                    arrests: document.getElementById('report-arrests').value,
+                    observations: document.getElementById('report-observations').value,
+                    timestamp: new Date()
+                };
+                
+                // Salvar no Firebase
+                const db = window.firebaseDB;
+                const { collection, addDoc } = window.firebaseFunctions;
+                
+                const docRef = await addDoc(collection(db, "patrol-reports"), reportData);
+                
+                // Enviar para webhook do Discord
+                await sendToDiscordWebhook(reportData, docRef.id);
+                
+                // Sucesso
+                showAlert('report-alert', 'Relatório enviado com sucesso!', 'success');
+                document.getElementById('report-form').reset();
+                
+                // Restaurar data atual
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('report-date').value = today;
+                
+            } catch (error) {
+                console.error('Erro ao enviar relatório:', error);
+                showAlert('report-alert', 'Erro ao enviar relatório. Tente novamente.', 'error');
+            } finally {
+                // Restaurar botão
+                reportBtn.disabled = false;
+                reportBtnText.textContent = 'Enviar Relatório';
+                reportLoading.style.display = 'none';
+            }
+        }
+        
+        // Função para enviar relatório para webhook do Discord
+        async function sendToDiscordWebhook(reportData, reportId) {
+            try {
+                const embed = {
+                    title: "📋 Novo Relatório IOPE",
+                    color: 0x1e3a8a,
+                    fields: [
+                        {
+                            name: "👮 Agente",
+                            value: reportData.agent,
+                            inline: true
+                        },
+                        {
+                            name: "📅 Data",
+                            value: reportData.date,
+                            inline: true
+                        },
+                        {
+                            name: "🕐 Turno",
+                            value: reportData.shift,
+                            inline: true
+                        },
+                        {
+                            name: "🚗 Viatura",
+                            value: reportData.vehicle,
+                            inline: true
+                        },
+                        {
+                            name: "📍 Área",
+                            value: reportData.area,
+                            inline: true
+                        },
+                        {
+                            name: "📝 Atividades",
+                            value: reportData.activities.length > 1024 ? 
+                                  reportData.activities.substring(0, 1021) + "..." : 
+                                  reportData.activities
+                        }
+                    ],
+                    timestamp: new Date().toISOString(),
+                    footer: {
+                        text: `ID do Relatório: ${reportId}`
+                    }
+                };
+                
+                // Adicionar campos opcionais se existirem
+                if (reportData.incidents && reportData.incidents.trim() !== '') {
+                    embed.fields.push({
+                        name: "🚨 Ocorrências",
+                        value: reportData.incidents.length > 1024 ? 
+                              reportData.incidents.substring(0, 1021) + "..." : 
+                              reportData.incidents
+                    });
+                }
+                
+                if (reportData.arrests && reportData.arrests.trim() !== '') {
+                    embed.fields.push({
+                        name: "🔒 Prisões",
+                        value: reportData.arrests.length > 1024 ? 
+                              reportData.arrests.substring(0, 1021) + "..." : 
+                              reportData.arrests
+                    });
+                }
+                
+                if (reportData.observations && reportData.observations.trim() !== '') {
+                    embed.fields.push({
+                        name: "💭 Observações",
+                        value: reportData.observations.length > 1024 ? 
+                              reportData.observations.substring(0, 1021) + "..." : 
+                              reportData.observations
+                    });
+                }
+                
+                const webhookData = {
+                    embeds: [embed]
+                };
+                
+                const response = await fetch(DISCORD_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(webhookData)
+                });
+                
+                // Salvar log do webhook
+                await saveWebhookLog(reportId, response.ok, response.status);
+                
+                return response.ok;
+                
+            } catch (error) {
+                console.error('Erro ao enviar para webhook:', error);
+                await saveWebhookLog(reportId, false, 0, error.message);
+                return false;
+            }
+        }
+        
+        // Função para salvar log do webhook
+        async function saveWebhookLog(reportId, success, statusCode, errorMessage = '') {
+            try {
+                const db = window.firebaseDB;
+                const { collection, addDoc } = window.firebaseFunctions;
+                
+                const logData = {
+                    reportId: reportId,
+                    success: success,
+                    statusCode: statusCode,
+                    errorMessage: errorMessage,
+                    timestamp: new Date()
+                };
+                
+                await addDoc(collection(db, "webhook-logs"), logData);
+                
+            } catch (error) {
+                console.error('Erro ao salvar log do webhook:', error);
+            }
+        }
+        
+        // Função para carregar histórico
+        async function loadHistory() {
+            try {
+                const db = window.firebaseDB;
+                const { collection, getDocs, query, orderBy, where } = window.firebaseFunctions;
+                
+                let q = query(collection(db, "patrol-reports"), orderBy("timestamp", "desc"));
+                
+                // Aplicar filtros
+                const agentFilter = document.getElementById('filter-agent').value;
+                const shiftFilter = document.getElementById('filter-shift').value;
+                const dateFilter = document.getElementById('filter-date').value;
+                const vehicleFilter = document.getElementById('filter-vehicle').value;
+                
+                // Em produção, você precisaria construir a query dinamicamente
+                // baseada nos filtros selecionados
+                
+                const querySnapshot = await getDocs(q);
+                
+                const historyTableBody = document.getElementById('history-table-body');
+                const historyEmpty = document.getElementById('history-empty');
+                
+                if (!historyTableBody) return;
+                
+                historyTableBody.innerHTML = '';
+                
+                let hasResults = false;
+                const agents = new Set();
+                
+                querySnapshot.forEach((doc) => {
+                    const report = doc.data();
+                    
+                    // Aplicar filtros no lado do cliente (em produção faça no servidor)
+                    if (agentFilter && report.agent !== agentFilter) return;
+                    if (shiftFilter && report.shift !== shiftFilter) return;
+                    if (dateFilter && report.date !== dateFilter) return;
+                    if (vehicleFilter && !report.vehicle.includes(vehicleFilter)) return;
+                    
+                    hasResults = true;
+                    agents.add(report.agent);
+                    
+                    // Formatar data para exibição
+                    const reportDate = new Date(report.date);
+                    const formattedDate = reportDate.toLocaleDateString('pt-BR');
+                    
+                    // Adicionar linha na tabela
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${report.agent}</td>
+                        <td>${formattedDate}</td>
+                        <td>${report.shift}</td>
+                        <td>${report.vehicle}</td>
+                        <td>${report.area}</td>
+                        <td>
+                            <button class="action-btn view-report" data-id="${doc.id}">Ver</button>
+                        </td>
+                    `;
+                    historyTableBody.appendChild(row);
+                });
+                
+                // Atualizar dropdown de agentes
+                updateAgentFilter(Array.from(agents));
+                
+                // Mostrar/ocultar mensagem de vazio
+                if (hasResults) {
+                    historyEmpty.style.display = 'none';
+                } else {
+                    historyEmpty.style.display = 'block';
+                }
+                
+                // Adicionar eventos aos botões de visualização
+                document.querySelectorAll('.view-report').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const reportId = this.getAttribute('data-id');
+                        viewReportDetails(reportId);
+                    });
+                });
+                
+            } catch (error) {
+                console.error('Erro ao carregar histórico:', error);
+            }
+        }
+        
+        // Atualizar filtro de agentes
+        function updateAgentFilter(agents) {
+            const agentFilter = document.getElementById('filter-agent');
+            if (!agentFilter) return;
+            
+            // Manter a seleção atual
+            const currentValue = agentFilter.value;
+            
+            // Limpar opções exceto "Todos os agentes"
+            agentFilter.innerHTML = '<option value="">Todos os agentes</option>';
+            
+            // Adicionar agentes
+            agents.sort().forEach(agent => {
+                const option = document.createElement('option');
+                option.value = agent;
+                option.textContent = agent;
+                agentFilter.appendChild(option);
+            });
+            
+            // Restaurar seleção anterior
+            agentFilter.value = currentValue;
+        }
+        
+        // Função para carregar logs do webhook
+        async function loadWebhookLogs() {
+            try {
+                const db = window.firebaseDB;
+                const { collection, getDocs, query, orderBy } = window.firebaseFunctions;
+                
+                const q = query(collection(db, "webhook-logs"), orderBy("timestamp", "desc"));
+                const querySnapshot = await getDocs(q);
+                
+                const logsTableBody = document.getElementById('logs-table-body');
+                if (!logsTableBody) return;
+                
+                logsTableBody.innerHTML = '';
+                
+                querySnapshot.forEach((doc) => {
+                    const log = doc.data();
+                    
+                    // Formatar data para exibição
+                    const logDate = new Date(log.timestamp?.toDate?.() || log.timestamp);
+                    const formattedDate = logDate.toLocaleString('pt-BR');
+                    
+                    // Determinar classe de status
+                    let statusClass = 'log-pending';
+                    let statusText = 'Pendente';
+                    
+                    if (log.success) {
+                        statusClass = 'log-success';
+                        statusText = 'Sucesso';
+                    } else if (log.success === false) {
+                        statusClass = 'log-error';
+                        statusText = 'Erro';
+                    }
+                    
+                    // Adicionar linha na tabela
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${formattedDate}</td>
+                        <td>${log.reportId}</td>
+                        <td class="${statusClass}">${statusText}</td>
+                        <td>${log.errorMessage || 'N/A'}</td>
+                        <td>${log.statusCode || 'N/A'}</td>
+                    `;
+                    logsTableBody.appendChild(row);
+                });
+                
+            } catch (error) {
+                console.error('Erro ao carregar logs:', error);
+            }
+        }
+        
+        // Função para verificar status do webhook
+        async function checkWebhookStatus() {
+            try {
+                const response = await fetch(DISCORD_WEBHOOK_URL, {
+                    method: 'HEAD'
+                });
+                
+                const statusIndicator = document.getElementById('webhook-status-indicator');
+                const statusText = document.getElementById('webhook-status-text');
+                
+                if (response.ok) {
+                    statusIndicator.className = 'status-indicator status-active';
+                    statusText.textContent = 'Webhook ativo e funcionando';
+                } else {
+                    statusIndicator.className = 'status-indicator status-inactive';
+                    statusText.textContent = 'Webhook inativo ou com problemas';
+                }
+                
+            } catch (error) {
+                const statusIndicator = document.getElementById('webhook-status-indicator');
+                const statusText = document.getElementById('webhook-status-text');
+                
+                statusIndicator.className = 'status-indicator status-inactive';
+                statusText.textContent = 'Erro ao verificar webhook';
+                
+                console.error('Erro ao verificar status do webhook:', error);
+            }
+        }
+        
+        // Função para testar webhook
+        async function testWebhook() {
+            try {
+                const testBtn = document.getElementById('test-webhook');
+                const originalText = testBtn.textContent;
+                
+                testBtn.disabled = true;
+                testBtn.textContent = 'Testando...';
+                
+                const testData = {
+                    content: "🧪 **Teste de Webhook IOPE**",
+                    embeds: [
+                        {
+                            title: "Teste de Integração",
+                            description: "Este é um teste do sistema de webhook do IOPE GCM",
+                            color: 0xf59e0b,
+                            timestamp: new Date().toISOString(),
+                            footer: {
+                                text: "Sistema IOPE GCM - Teste"
+                            }
+                        }
+                    ]
+                };
+                
+                const response = await fetch(DISCORD_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(testData)
+                });
+                
+                if (response.ok) {
+                    showAlert('logs', '✅ Webhook testado com sucesso!', 'success');
+                    checkWebhookStatus();
+                } else {
+                    showAlert('logs', '❌ Erro ao testar webhook', 'error');
+                }
+                
+            } catch (error) {
+                console.error('Erro no teste do webhook:', error);
+                showAlert('logs', '❌ Erro ao testar webhook', 'error');
+            } finally {
+                const testBtn = document.getElementById('test-webhook');
+                testBtn.disabled = false;
+                testBtn.textContent = 'Testar Webhook';
+            }
+        }
+        
+        // Função para login administrativo
+        function adminLogin() {
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+            
+            // Verificação simples (em produção, usar autenticação segura)
+            if (username === 'admin' && password === 'iope2025') {
+                localStorage.setItem('adminLoggedIn', 'true');
+                document.getElementById('admin-link').style.display = 'block';
+                showPage('admin');
+                loadReports();
+                showAlert('login-alert', 'Login realizado com sucesso!', 'success');
+            } else {
+                showAlert('login-alert', 'Credenciais inválidas. Tente novamente.', 'error');
+            }
+        }
+        
+        // Função para carregar relatórios (admin)
+        async function loadReports() {
+            try {
+                const db = window.firebaseDB;
+                const { collection, getDocs, query, orderBy } = window.firebaseFunctions;
+                
+                const q = query(collection(db, "patrol-reports"), orderBy("timestamp", "desc"));
+                const querySnapshot = await getDocs(q);
+                
+                const reportsTableBody = document.getElementById('reports-table-body');
+                if (!reportsTableBody) return;
+                
+                reportsTableBody.innerHTML = '';
+                
+                let totalReports = 0;
+                let todayReports = 0;
+                let matutinoReports = 0;
+                let noturnoReports = 0;
+                
+                const today = new Date().toISOString().split('T')[0];
+                
+                querySnapshot.forEach((doc) => {
+                    const report = doc.data();
+                    totalReports++;
+                    
+                    // Contagem por categoria
+                    if (report.date === today) {
+                        todayReports++;
+                    }
+                    
+                    if (report.shift === 'matutino') {
+                        matutinoReports++;
+                    } else if (report.shift === 'noturno') {
+                        noturnoReports++;
+                    }
+                    
+                    // Formatar data para exibição
+                    const reportDate = new Date(report.date);
+                    const formattedDate = reportDate.toLocaleDateString('pt-BR');
+                    
+                    // Adicionar linha na tabela
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${report.agent}</td>
+                        <td>${formattedDate}</td>
+                        <td>${report.shift}</td>
+                        <td>${report.vehicle}</td>
+                        <td>${report.area}</td>
+                        <td>
+                            <button class="action-btn view-report" data-id="${doc.id}">Ver</button>
+                        </td>
+                    `;
+                    reportsTableBody.appendChild(row);
+                });
+                
+                // Atualizar estatísticas
+                document.getElementById('total-reports').textContent = totalReports;
+                document.getElementById('today-reports').textContent = todayReports;
+                document.getElementById('matutino-reports').textContent = matutinoReports;
+                document.getElementById('noturno-reports').textContent = noturnoReports;
+                
+                // Adicionar eventos aos botões de visualização
+                document.querySelectorAll('.view-report').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const reportId = this.getAttribute('data-id');
+                        viewReportDetails(reportId);
+                    });
+                });
+                
+            } catch (error) {
+                console.error('Erro ao carregar relatórios:', error);
+            }
+        }
+        
+        // Função para visualizar detalhes do relatório
+        async function viewReportDetails(reportId) {
+            try {
+                const db = window.firebaseDB;
+                const { doc, getDoc } = window.firebaseFunctions;
+                
+                const reportDoc = await getDoc(doc(db, "patrol-reports", reportId));
+                
+                if (reportDoc.exists()) {
+                    const report = reportDoc.data();
+                    
+                    // Formatar data
+                    const reportDate = new Date(report.date);
+                    const formattedDate = reportDate.toLocaleDateString('pt-BR');
+                    
+                    // Construir conteúdo do modal
+                    const detailsContent = `
+                        <div class="report-detail">
+                            <h4>Agente</h4>
+                            <p>${report.agent}</p>
+                        </div>
+                        <div class="report-detail">
+                            <h4>Data</h4>
+                            <p>${formattedDate}</p>
+                        </div>
+                        <div class="report-detail">
+                            <h4>Turno</h4>
+                            <p>${report.shift}</p>
+                        </div>
+                        <div class="report-detail">
+                            <h4>Viatura</h4>
+                            <p>${report.vehicle}</p>
+                        </div>
+                        <div class="report-detail">
+                            <h4>Área de Patrulhamento</h4>
+                            <p>${report.area}</p>
+                        </div>
+                        <div class="report-detail">
+                            <h4>Atividades Realizadas</h4>
+                            <p>${report.activities}</p>
+                        </div>
+                        <div class="report-detail">
+                            <h4>Ocorrências Registradas</h4>
+                            <p>${report.incidents || 'Nenhuma ocorrência registrada'}</p>
+                        </div>
+                        <div class="report-detail">
+                            <h4>Prisões Realizadas</h4>
+                            <p>${report.arrests || 'Nenhuma prisão realizada'}</p>
+                        </div>
+                        <div class="report-detail">
+                            <h4>Observações</h4>
+                            <p>${report.observations || 'Nenhuma observação adicional'}</p>
+                        </div>
+                    `;
+                    
+                    document.getElementById('report-details').innerHTML = detailsContent;
+                    document.getElementById('report-modal').style.display = 'flex';
+                }
+            } catch (error) {
+                console.error('Erro ao carregar detalhes do relatório:', error);
+            }
+        }
+    </script>
+</body>
+</html>
